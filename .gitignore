@@ -11,3 +11,9 @@
 # he dieu hanh/IDE
 .DS_Store
 .vscode/
+
+#logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
