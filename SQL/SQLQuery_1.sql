@@ -73,6 +73,15 @@ CREATE TABLE dbo.ratings (
     CONSTRAINT FK_r_user FOREIGN KEY (user_id) REFERENCES dbo.users(user_id),
     CONSTRAINT FK_r_food FOREIGN KEY (food_id)  REFERENCES dbo.foods(food_id)
 );
+-- 8. User likes foods
+CREATE TABLE dbo.user_food_likes (
+    user_id  UNIQUEIDENTIFIER NOT NULL,
+    food_id  UNIQUEIDENTIFIER NOT NULL,
+    liked_at DATETIME2(3)     NOT NULL DEFAULT SYSUTCDATETIME(),
+    CONSTRAINT PK_user_food_likes PRIMARY KEY (user_id, food_id),
+    CONSTRAINT FK_ufl_user FOREIGN KEY (user_id) REFERENCES dbo.users(user_id),
+    CONSTRAINT FK_ufl_food FOREIGN KEY (food_id) REFERENCES dbo.foods(food_id)
+);
 --search on foods_name
 CREATE INDEX IX_foods_name ON dbo.foods(food_name);
 --search on flavors_name
