@@ -89,3 +89,24 @@ CREATE INDEX IX_flavors_name ON dbo.flavors(flavor_name);
 -- Tim user theo email (da unique), bo sung index cho location neu hay loc theo dia diem
 CREATE INDEX IX_users_location ON dbo.users(location_id);
 
+--Like--(just record one time)
+GO
+CREATE OR ALTER PROCEDURE dbo.sp_user_like_food
+    @user_id UNIQUEIDENTIFIER,
+    @food_id UNIQUEIDENTIFIER
+AS
+BEGIN
+    SET NOCOUNT ON;
+    IF NOT EXISTS (
+        SELECT 1 FROM dbo.user_food_likes
+        WHERE user_id = @user_id AND food_id = @food_id
+    )
+    BEGIN
+        INSERT INTO dbo.user_food_likes(user_id, food_id) VALUES (@user_id, @food_id);
+    END
+END
+GO
+-- foods are being like the most by users
+CREATE INDEX IX_ufl_food ON dbo.user_food_likes(food_id);
+-- foods that user like lately
+CREATE INDEX IX_ufl_user_likedat ON dbo.user_food_likes(user_id, liked_at DESC);

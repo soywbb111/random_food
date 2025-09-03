@@ -12,7 +12,9 @@ web.post("/register", (req, res) => {
     console.log("FORM BODY:", req.body);
     return res.send('OK');
 })
-
+web.listen(5500, '0.0.0.0', () => {
+  console.log("Server running");
+});
 //connect database (mssql)
 //Khoi dong server
 async function startServer() {

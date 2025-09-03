@@ -3,10 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Homepage - Random food</title>
     <link rel="stylesheet" href="page.css">
 </head>
 <body>
     
+
+  <!-- Gift box -->
+  <img id="giftBox" src="../../assets/images/Open here.gif" alt="Gift Box" class="gift-box" />
+
+  <!-- Result -->
+  <div class="result-container" id="result">
+    <img id="resultImage" src="" alt="Entity Image" />
+    <p id="resultText"></p>
+  </div>
+
+  <script>
+    const gift = document.getElementById('giftBox');
+    const result = document.getElementById('result');
+    const resultImg = document.getElementById('resultImage');
+    const resultTxt = document.getElementById('resultText');
+
+    let opened = false;
+
+    async function openGift() {
+      if (opened) return;       // block open again
+      opened = true;
+      gift.classList.add('opening');
+
+      try {
+        const res = await fetch('/api/random');
+        if (!res.ok) throw new Error('Fetch failed');
+        const data = await res.json();
+
+        // Food is appering
+        resultImg.src = data.image_url || '';
+        resultImg.alt = data.name || 'Item';
+        resultTxt.textContent = `${data.name || ''}${data.description ? ' - ' + data.description : ''}`;
+        result.style.display = 'block';
+
+        // Good bye the picture after the animation
+        setTimeout(() => { gift.style.display = 'none'; }, 350);
+      } catch (e) {
+        // If error, click again
+        opened = false;
+        gift.classList.remove('opening');
+        alert('Try again!');
+      }
+    }
+
+    gift.addEventListener('click', openGift);
+  </script>
 </body>
 </html>
