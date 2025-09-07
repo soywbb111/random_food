@@ -110,34 +110,4 @@ GO
 CREATE INDEX IX_ufl_food ON dbo.user_food_likes(food_id);
 -- foods that user like lately
 CREATE INDEX IX_ufl_user_likedat ON dbo.user_food_likes(user_id, liked_at DESC);
---Outbox table and trigger, backend will shoot Cypher right after INSERT or when you call
--- Waiting for "go" to Neo4j
-CREATE TABLE dbo.neo4j_outbox (
-    id           BIGINT IDENTITY(1,1) PRIMARY KEY,
-    event_type   VARCHAR(32)   NOT NULL,                -- 'LIKED'
-    payload      NVARCHAR(MAX) NOT NULL,                -- JSON: { user_id, food_id, liked_at }
-    created_at   DATETIME2(3)  NOT NULL DEFAULT SYSUTCDATETIME(),
-    processed_at DATETIME2(3)  NULL                     -- after
-);
 
-CREATE INDEX IX_outbox_unprocessed ON dbo.neo4j_outbox(processed_at) WHERE processed_at IS NULL;
-GO
-
--- Anytime like happen => outbox
-CREATE OR ALTER TRIGGER dbo.trg_user_food_likes_outbox
-ON dbo.user_food_likes
-AFTER INSERT
-AS
-BEGIN
-    SET NOCOUNT ON;
-
-    INSERT INTO dbo.neo4j_outbox(event_type, payload)
-    SELECT
-        'LIKED',
-        (
-            SELECT i.user_id, i.food_id, i.liked_at
-            FOR JSON PATH, WITHOUT_ARRAY_WRAPPER  -- 1 JSON per row
-        )
-    FROM inserted i;
-END
-GO
