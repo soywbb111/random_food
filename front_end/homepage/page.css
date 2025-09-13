@@ -57,3 +57,13 @@ body {
 
 
     @keyframes fadeIn { from {opacity:0; transform: translateY(6px);} to {opacity:1; transform:none;} }
+#navbar {
+    position: fixed;
+    top: 0;
+    width: 100%
+    background-color: lightyellow;
+    padding: 12px;
+    outline: 1px dashed red;
+    z-index: 1000;
+    padding-top: 60px;
+}
