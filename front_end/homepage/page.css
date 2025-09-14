@@ -60,10 +60,10 @@ body {
 #navbar {
     position: fixed;
     top: 0;
-    width: 100%
+    width: 100%;
     background-color: lightyellow;
     padding: 12px;
     outline: 1px dashed red;
     z-index: 1000;
     padding-top: 60px;
-}
+};
